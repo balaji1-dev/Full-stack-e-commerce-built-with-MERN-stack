@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+// Import Redux hooks
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../redux/cartSlice';
 
 function HomePage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Get dispatch function
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -18,6 +24,12 @@ function HomePage() {
     };
     fetchProducts();
   }, []);
+
+  // Handle Add to Cart
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product)); // Dispatch the action!
+    alert(`${product.name} added to cart!`);
+  };
 
   if (loading) return <h2 style={{textAlign: 'center', marginTop: '50px'}}>Loading...</h2>;
 
@@ -40,7 +52,9 @@ function HomePage() {
             <p className="price">₹{product.price.toLocaleString()}</p>
             <p className="rating">⭐ {product.rating} ({product.numReviews} reviews)</p>
             <p className="stock">Stock: {product.stock}</p>
-            <button>Add to Cart</button>
+            <button onClick={() => handleAddToCart(product)}>
+              Add to Cart
+            </button>
           </div>
         ))}
       </div>
